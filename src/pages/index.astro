@@ -1,28 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import LandingPage from '../components/LandingPage';
 ---
 
-<Layout title="FOSSExplorer">
-  <main>
-    <h1>FOSSExplorer</h1>
-    <p>Explore open source software.</p>
-  </main>
+<Layout title="FOSS Explorer - Open Source Strategy for Education">
+  <LandingPage client:only="react" />
 </Layout>
-
-<style>
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    color: var(--color-text-muted);
-    font-size: 1.125rem;
-  }
-</style>

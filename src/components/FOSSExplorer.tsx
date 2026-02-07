@@ -33,6 +33,13 @@ export default function FOSSExplorer({ theme }: Props) {
     return c.data.color || "var(--cat-infra)";
   };
 
+  const getCatPath = (n: any): string => {
+    const parts: string[] = [];
+    let c = n.parent;
+    while (c && c.depth > 0) { parts.unshift(c.data.name); c = c.parent; }
+    return parts.join(" › ");
+  };
+
   const render = useCallback(() => {
     if (!svgRef.current) return;
     const { w, h } = dims;
@@ -98,6 +105,12 @@ export default function FOSSExplorer({ theme }: Props) {
       .attr("stroke-width", (d: any) => d.depth === 0 ? 2 : d.depth === 1 ? 1.5 : d.children ? 1 : 0.7)
       .style("cursor", "pointer")
       .on("click", (e: any, d: any) => { e.stopPropagation(); zoomNode(currentFocus === d && d.parent ? d.parent : d); })
+      .on("dblclick", (e: any, d: any) => {
+        e.stopPropagation();
+        if (!d.children && d.data.slug) {
+          window.location.href = "/tool/" + d.data.slug;
+        }
+      })
       .on("mouseenter", (e: any, d: any) => {
         if (d.depth === 0) return;
         setHovered(d);
@@ -152,12 +165,32 @@ export default function FOSSExplorer({ theme }: Props) {
       {hovered && hovered.data.description && (
         <div style={{
           position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)",
-          background: "var(--tooltip-bg)", border: "1px solid var(--border-accent)", borderRadius: 10,
-          padding: "10px 18px", maxWidth: 400, backdropFilter: "blur(12px)", zIndex: 100, pointerEvents: "none",
+          background: "var(--tooltip-bg)", border: "1px solid var(--border-accent)", borderRadius: 12,
+          padding: "14px 20px", maxWidth: 460, minWidth: 260, backdropFilter: "blur(14px)", zIndex: 100, pointerEvents: "none",
           animation: "tooltipIn 0.15s ease-out",
         }}>
-          <div style={{ fontWeight: 700, fontSize: 14, color: getCatColor(hovered), fontFamily: "'JetBrains Mono', monospace", marginBottom: 3 }}>{hovered.data.name}</div>
-          <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>{hovered.data.description}</div>
+          {getCatPath(hovered) && (
+            <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 6, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.02em" }}>
+              {getCatPath(hovered)}
+            </div>
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+            {hovered.data.icon && <span style={{ fontSize: 22 }}>{hovered.data.icon}</span>}
+            <span style={{ fontWeight: 700, fontSize: 15, color: getCatColor(hovered), fontFamily: "'JetBrains Mono', monospace" }}>{hovered.data.name}</span>
+          </div>
+          <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.55, marginBottom: hovered.data.url || hovered.data.slug ? 8 : 0 }}>{hovered.data.description}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            {hovered.data.url && (
+              <span style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", opacity: 0.8 }}>
+                🔗 {hovered.data.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+              </span>
+            )}
+            {!hovered.children && hovered.data.slug && (
+              <span style={{ fontSize: 11, color: getCatColor(hovered), fontFamily: "'JetBrains Mono', monospace", opacity: 0.7 }}>
+                double-click for details →
+              </span>
+            )}
+          </div>
         </div>
       )}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center", padding: "14px 0 4px" }}>

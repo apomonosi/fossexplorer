@@ -1,0 +1,74 @@
+---
+interface Props {
+  backLabel?: string;
+  backHref?: string;
+}
+
+const { backLabel = "Back to FOSS Explorer", backHref = "/" } = Astro.props;
+---
+
+<nav class="page-nav">
+  <a href={backHref} class="back-link">&lt; {backLabel}</a>
+  <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">Light</button>
+</nav>
+
+<script>
+  function initToggle() {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    const update = () => {
+      const t = document.documentElement.getAttribute('data-theme') || 'dark';
+      btn.textContent = t === 'dark' ? 'Light' : 'Dark';
+    };
+    update();
+    btn.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      update();
+    });
+  }
+  initToggle();
+  document.addEventListener('astro:after-swap', initToggle);
+</script>
+
+<style>
+  .page-nav {
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
+    backdrop-filter: blur(16px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .back-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--accent-1);
+  }
+  .theme-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+  }
+  .theme-btn:hover {
+    border-color: var(--accent-1);
+    color: var(--text-primary);
+  }
+</style>

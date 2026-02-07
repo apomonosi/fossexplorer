@@ -184,14 +184,15 @@ export default function Whyometer() {
 
   return (
     <div style={{
-      background: "linear-gradient(170deg, #020617 0%, #0a0f1a 50%, #060a13 100%)",
+      background: "var(--bg-primary)",
       fontFamily: "'Oxanium', 'JetBrains Mono', monospace",
-      color: "#e2e8f0",
+      color: "var(--text-primary)",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
       padding: "36px 0 40px",
       borderRadius: 16,
+      transition: "background 0.35s, color 0.35s",
     }}>
       <header style={{ textAlign: "center", padding: "0 24px 8px" }}>
         <h2 style={{
@@ -202,7 +203,7 @@ export default function Whyometer() {
         }}>
           Why-ometer
         </h2>
-        <p style={{ fontSize: 13, color: "#64748b", marginTop: 8, letterSpacing: "0.06em", fontWeight: 300 }}>
+        <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 8, letterSpacing: "0.06em", fontWeight: 300 }}>
           Strategic urgency indicators for Linux & FOSS adoption
         </p>
       </header>
@@ -227,8 +228,8 @@ export default function Whyometer() {
               onMouseEnter={() => setHoveredIdx(i)}
               onMouseLeave={() => setHoveredIdx(null)}
               style={{
-                background: hoveredIdx === i ? "#111827" : "#0c1220",
-                border: `1px solid ${hoveredIdx === i ? r.color + "55" : "#1e293b"}`,
+                background: hoveredIdx === i ? "var(--bg-card)" : "var(--bg-secondary)",
+                border: `1px solid ${hoveredIdx === i ? r.color + "55" : "var(--border-hard)"}`,
                 borderRadius: 8,
                 padding: "12px 14px",
                 transition: "all 0.25s",
@@ -245,10 +246,10 @@ export default function Whyometer() {
                   transition: "color 0.3s",
                 }}>
                   {Math.round(val)}
-                  <span style={{ fontSize: 10, color: "#475569", marginLeft: 1 }}>%</span>
+                  <span style={{ fontSize: 10, color: "var(--text-muted)", marginLeft: 1 }}>%</span>
                 </span>
               </div>
-              <div style={{ height: 3, borderRadius: 2, background: "#1e293b", overflow: "hidden", marginBottom: 6 }}>
+              <div style={{ height: 3, borderRadius: 2, background: "var(--border-hard)", overflow: "hidden", marginBottom: 6 }}>
                 <div style={{
                   height: "100%", borderRadius: 2,
                   background: `linear-gradient(90deg, ${r.color}88, ${r.color})`,
@@ -257,7 +258,7 @@ export default function Whyometer() {
                   boxShadow: `0 0 8px ${r.color}44`,
                 }} />
               </div>
-              <p style={{ fontSize: 11, color: "#64748b", lineHeight: 1.45, margin: 0 }}>{r.desc}</p>
+              <p style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.45, margin: 0 }}>{r.desc}</p>
             </div>
           );
         })}

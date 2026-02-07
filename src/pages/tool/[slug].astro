@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageNav from '../../components/PageNav.astro';
 import { findBySlug, getAllSlugs } from '../../lib/foss-lookup';
 
 export function getStaticPaths() {
@@ -15,99 +16,76 @@ const breadcrumb = [...path.slice(1), node.name];
 ---
 
 <Layout title={`${node.name} - FOSS Explorer`} description={node.description}>
-  <div class="page-wrapper">
-    <nav class="page-nav">
-      <a href="/" class="back-link">&lt; Back to FOSS Explorer</a>
-    </nav>
+  <PageNav />
+  <main class="detail-main">
+    <div class="breadcrumb">
+      {breadcrumb.map((part, i) => (
+        <span>
+          {i > 0 && <span class="sep">›</span>}
+          <span class:list={[i === breadcrumb.length - 1 ? 'current' : 'ancestor']}>{part}</span>
+        </span>
+      ))}
+    </div>
 
-    <main class="detail-main">
-      <div class="breadcrumb">
-        {breadcrumb.map((part, i) => (
-          <span>
-            {i > 0 && <span class="sep">›</span>}
-            <span class:list={[i === breadcrumb.length - 1 ? 'current' : 'ancestor']}>{part}</span>
-          </span>
-        ))}
-      </div>
-
-      <header class="detail-header">
-        {node.icon && <span class="icon">{node.icon}</span>}
-        <div>
-          <h1 class="title">{node.name}</h1>
-          {node.url && (
-            <a href={node.url} target="_blank" rel="noopener noreferrer" class="url-link">
-              {node.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗
-            </a>
-          )}
-        </div>
-      </header>
-
-      <section class="card">
-        <h2>About</h2>
-        <p>{node.description}</p>
-      </section>
-
-      <section class="card">
-        <h2>Getting Started</h2>
-        <p>
-          Visit the official website to download and install {node.name}. Most Linux distributions include it in their
-          package repositories, so you can often install it with your package manager:
-        </p>
-        <div class="code-block">
-          <code>
-            <span class="comment"># Debian / Ubuntu</span><br/>
-            sudo apt install {node.slug}<br/><br/>
-            <span class="comment"># Fedora</span><br/>
-            sudo dnf install {node.slug}<br/><br/>
-            <span class="comment"># Arch Linux</span><br/>
-            sudo pacman -S {node.slug}
-          </code>
-        </div>
-        <p class="note">
-          Package names may vary by distribution. Check your distro's package search or the official installation docs for exact package names.
-        </p>
-      </section>
-
-      <section class="card">
-        <h2>Why Use {node.name}?</h2>
-        <ul class="reasons">
-          <li><strong>Free & Open Source</strong> — No licensing costs, transparent code, community-driven development</li>
-          <li><strong>Privacy Respecting</strong> — Your data stays yours, no telemetry or tracking</li>
-          <li><strong>Community Support</strong> — Active community, forums, documentation, and regular updates</li>
-          <li><strong>Institutional Ready</strong> — Can be deployed and managed across your organization</li>
-        </ul>
-      </section>
-
-      {node.url && (
-        <div class="cta">
-          <a href={node.url} target="_blank" rel="noopener noreferrer" class="cta-button">
-            Visit {node.name} Official Site ↗
+    <header class="detail-header">
+      {node.icon && <span class="icon">{node.icon}</span>}
+      <div>
+        <h1 class="title">{node.name}</h1>
+        {node.url && (
+          <a href={node.url} target="_blank" rel="noopener noreferrer" class="url-link">
+            {node.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗
           </a>
-        </div>
-      )}
-    </main>
-  </div>
+        )}
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>About</h2>
+      <p>{node.description}</p>
+    </section>
+
+    <section class="card">
+      <h2>Getting Started</h2>
+      <p>
+        Visit the official website to download and install {node.name}. Most Linux distributions include it in their
+        package repositories, so you can often install it with your package manager:
+      </p>
+      <div class="code-block">
+        <code>
+          <span class="comment"># Debian / Ubuntu</span><br/>
+          sudo apt install {node.slug}<br/><br/>
+          <span class="comment"># Fedora</span><br/>
+          sudo dnf install {node.slug}<br/><br/>
+          <span class="comment"># Arch Linux</span><br/>
+          sudo pacman -S {node.slug}
+        </code>
+      </div>
+      <p class="note">
+        Package names may vary by distribution. Check your distro's package search or the official installation docs for exact package names.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Why Use {node.name}?</h2>
+      <ul class="reasons">
+        <li><strong>Free & Open Source</strong> — No licensing costs, transparent code, community-driven development</li>
+        <li><strong>Privacy Respecting</strong> — Your data stays yours, no telemetry or tracking</li>
+        <li><strong>Community Support</strong> — Active community, forums, documentation, and regular updates</li>
+        <li><strong>Institutional Ready</strong> — Can be deployed and managed across your organization</li>
+      </ul>
+    </section>
+
+    {node.url && (
+      <div class="cta">
+        <a href={node.url} target="_blank" rel="noopener noreferrer" class="cta-button">
+          Visit {node.name} Official Site ↗
+        </a>
+      </div>
+    )}
+  </main>
 </Layout>
 
 <style define:vars={{ catColor: categoryColor }}>
-  .page-wrapper {
-    min-height: 100vh;
-    background: linear-gradient(170deg, #020617 0%, #0a0f1a 50%, #060a13 100%);
-  }
-  .page-nav {
-    padding: 16px 32px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  }
-  .back-link {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: #64748b;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .back-link:hover {
-    color: #22d3ee;
-  }
   .detail-main {
     max-width: 720px;
     margin: 0 auto;
@@ -116,7 +94,7 @@ const breadcrumb = [...path.slice(1), node.name];
   .breadcrumb {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    color: #475569;
+    color: var(--text-muted);
     margin-bottom: 24px;
     display: flex;
     flex-wrap: wrap;
@@ -124,11 +102,11 @@ const breadcrumb = [...path.slice(1), node.name];
     gap: 4px;
   }
   .breadcrumb .sep {
-    color: #334155;
+    color: var(--border-muted);
     margin: 0 4px;
   }
   .breadcrumb .ancestor {
-    color: #64748b;
+    color: var(--text-muted);
   }
   .breadcrumb .current {
     color: var(--catColor);
@@ -149,7 +127,7 @@ const breadcrumb = [...path.slice(1), node.name];
     font-family: 'JetBrains Mono', monospace;
     font-size: 32px;
     font-weight: 800;
-    color: #f1f5f9;
+    color: var(--text-primary);
     margin: 0 0 6px;
     letter-spacing: -0.02em;
   }
@@ -166,8 +144,8 @@ const breadcrumb = [...path.slice(1), node.name];
     text-decoration: underline;
   }
   .card {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(148, 163, 184, 0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 24px 28px;
     margin-bottom: 20px;
@@ -182,7 +160,7 @@ const breadcrumb = [...path.slice(1), node.name];
   }
   .card p {
     font-size: 14px;
-    color: #94a3b8;
+    color: var(--text-secondary);
     line-height: 1.7;
     margin: 0 0 12px;
   }
@@ -190,23 +168,23 @@ const breadcrumb = [...path.slice(1), node.name];
     margin-bottom: 0;
   }
   .code-block {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(148, 163, 184, 0.06);
+    background: var(--bg-inset);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 16px 20px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
-    color: #e2e8f0;
+    color: var(--text-primary);
     line-height: 1.6;
     overflow-x: auto;
     margin-bottom: 12px;
   }
   .comment {
-    color: #475569;
+    color: var(--text-muted);
   }
   .note {
     font-size: 12px !important;
-    color: #64748b !important;
+    color: var(--text-muted) !important;
     font-style: italic;
   }
   .reasons {
@@ -216,16 +194,16 @@ const breadcrumb = [...path.slice(1), node.name];
   }
   .reasons li {
     font-size: 14px;
-    color: #94a3b8;
+    color: var(--text-secondary);
     line-height: 1.7;
     padding: 6px 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+    border-bottom: 1px solid var(--border);
   }
   .reasons li:last-child {
     border-bottom: none;
   }
   .reasons strong {
-    color: #cbd5e1;
+    color: var(--text-primary);
   }
   .cta {
     text-align: center;
@@ -236,7 +214,7 @@ const breadcrumb = [...path.slice(1), node.name];
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
     font-weight: 600;
-    color: #020617;
+    color: var(--bg-primary);
     background: var(--catColor);
     padding: 12px 32px;
     border-radius: 8px;

@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
-import { themes, type ThemeName } from "../data/themes";
 import { ROSETTA_SECTIONS } from "../data/rosetta";
 import { STRATEGY_PHASES, BARRIER_CARDS } from "../data/strategy";
 import FOSSExplorer from "./FOSSExplorer";
 
 export default function LandingPage() {
-  const [theme, setTheme] = useState<ThemeName>("dark");
-  const t = themes[theme];
+  const [theme, setTheme] = useState<string>("dark");
   const [vis, setVis] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const stored = localStorage.getItem("theme") || "dark";
+    setTheme(stored);
+    document.documentElement.setAttribute("data-theme", stored);
+  }, []);
 
   useEffect(() => {
     const obs = new IntersectionObserver(entries => {
@@ -17,24 +21,21 @@ export default function LandingPage() {
     return () => obs.disconnect();
   }, []);
 
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+  };
+
   const reveal = (id: string, delay = 0): React.CSSProperties => ({
     opacity: vis[id] ? 1 : 0,
     transform: vis[id] ? "translateY(0)" : "translateY(20px)",
     transition: `opacity 0.55s ease ${delay}s, transform 0.55s ease ${delay}s`,
   });
 
-  const cssVars = Object.entries(t).map(([k, v]) => `${k}: ${v}`).join("; ");
-
   return (
     <div style={{ minHeight: "100vh", fontFamily: "'Source Sans 3', 'Noto Sans', sans-serif" }}>
-      <style>{`
-        :root { ${cssVars} }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body { background: var(--bg-primary); color: var(--text-primary); transition: background 0.35s, color 0.35s; }
-        ::selection { background: color-mix(in srgb, var(--accent-1) 30%, transparent); }
-        @keyframes tooltipIn { from { opacity:0; transform:translateX(-50%) translateY(4px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
-      `}</style>
 
       <div style={{ background: "var(--bg-primary)", color: "var(--text-primary)", transition: "background 0.35s, color 0.35s" }}>
 
@@ -68,7 +69,7 @@ export default function LandingPage() {
                 onMouseEnter={e => (e.target as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={e => (e.target as HTMLElement).style.color = "var(--text-muted)"}>
                 Desktop
               </a>
-              <button onClick={() => setTheme(p => p === "dark" ? "light" : "dark")}
+              <button onClick={toggleTheme}
                 aria-label="Toggle theme"
                 style={{
                   background: "var(--bg-card)", border: "1px solid var(--border-accent)", borderRadius: 8, padding: "6px 12px",

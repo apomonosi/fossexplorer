@@ -1,0 +1,250 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { findBySlug, getAllSlugs } from '../../lib/foss-lookup';
+
+export function getStaticPaths() {
+  return getAllSlugs().map(slug => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const detail = findBySlug(slug!);
+if (!detail) return Astro.redirect('/');
+
+const { node, path, categoryColor } = detail;
+const breadcrumb = [...path.slice(1), node.name];
+---
+
+<Layout title={`${node.name} - FOSS Explorer`} description={node.description}>
+  <div class="page-wrapper">
+    <nav class="page-nav">
+      <a href="/" class="back-link">&lt; Back to FOSS Explorer</a>
+    </nav>
+
+    <main class="detail-main">
+      <div class="breadcrumb">
+        {breadcrumb.map((part, i) => (
+          <span>
+            {i > 0 && <span class="sep">›</span>}
+            <span class:list={[i === breadcrumb.length - 1 ? 'current' : 'ancestor']}>{part}</span>
+          </span>
+        ))}
+      </div>
+
+      <header class="detail-header">
+        {node.icon && <span class="icon">{node.icon}</span>}
+        <div>
+          <h1 class="title">{node.name}</h1>
+          {node.url && (
+            <a href={node.url} target="_blank" rel="noopener noreferrer" class="url-link">
+              {node.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗
+            </a>
+          )}
+        </div>
+      </header>
+
+      <section class="card">
+        <h2>About</h2>
+        <p>{node.description}</p>
+      </section>
+
+      <section class="card">
+        <h2>Getting Started</h2>
+        <p>
+          Visit the official website to download and install {node.name}. Most Linux distributions include it in their
+          package repositories, so you can often install it with your package manager:
+        </p>
+        <div class="code-block">
+          <code>
+            <span class="comment"># Debian / Ubuntu</span><br/>
+            sudo apt install {node.slug}<br/><br/>
+            <span class="comment"># Fedora</span><br/>
+            sudo dnf install {node.slug}<br/><br/>
+            <span class="comment"># Arch Linux</span><br/>
+            sudo pacman -S {node.slug}
+          </code>
+        </div>
+        <p class="note">
+          Package names may vary by distribution. Check your distro's package search or the official installation docs for exact package names.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Why Use {node.name}?</h2>
+        <ul class="reasons">
+          <li><strong>Free & Open Source</strong> — No licensing costs, transparent code, community-driven development</li>
+          <li><strong>Privacy Respecting</strong> — Your data stays yours, no telemetry or tracking</li>
+          <li><strong>Community Support</strong> — Active community, forums, documentation, and regular updates</li>
+          <li><strong>Institutional Ready</strong> — Can be deployed and managed across your organization</li>
+        </ul>
+      </section>
+
+      {node.url && (
+        <div class="cta">
+          <a href={node.url} target="_blank" rel="noopener noreferrer" class="cta-button">
+            Visit {node.name} Official Site ↗
+          </a>
+        </div>
+      )}
+    </main>
+  </div>
+</Layout>
+
+<style define:vars={{ catColor: categoryColor }}>
+  .page-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(170deg, #020617 0%, #0a0f1a 50%, #060a13 100%);
+  }
+  .page-nav {
+    padding: 16px 32px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+  .back-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: #22d3ee;
+  }
+  .detail-main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .breadcrumb {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+  }
+  .breadcrumb .sep {
+    color: #334155;
+    margin: 0 4px;
+  }
+  .breadcrumb .ancestor {
+    color: #64748b;
+  }
+  .breadcrumb .current {
+    color: var(--catColor);
+    font-weight: 600;
+  }
+  .detail-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 36px;
+  }
+  .icon {
+    font-size: 48px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 800;
+    color: #f1f5f9;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .url-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--catColor);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .url-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+  .card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.08);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--catColor);
+    margin: 0 0 12px;
+    letter-spacing: 0.02em;
+  }
+  .card p {
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.7;
+    margin: 0 0 12px;
+  }
+  .card p:last-child {
+    margin-bottom: 0;
+  }
+  .code-block {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(148, 163, 184, 0.06);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #e2e8f0;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin-bottom: 12px;
+  }
+  .comment {
+    color: #475569;
+  }
+  .note {
+    font-size: 12px !important;
+    color: #64748b !important;
+    font-style: italic;
+  }
+  .reasons {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .reasons li {
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.7;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+  }
+  .reasons li:last-child {
+    border-bottom: none;
+  }
+  .reasons strong {
+    color: #cbd5e1;
+  }
+  .cta {
+    text-align: center;
+    margin-top: 32px;
+  }
+  .cta-button {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: #020617;
+    background: var(--catColor);
+    padding: 12px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .cta-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+</style>

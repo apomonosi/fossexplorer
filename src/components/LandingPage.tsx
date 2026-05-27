@@ -3,7 +3,12 @@ import { ROSETTA_SECTIONS } from "../data/rosetta";
 import { STRATEGY_PHASES, BARRIER_CARDS } from "../data/strategy";
 import FOSSExplorer from "./FOSSExplorer";
 
-export default function LandingPage() {
+interface Props {
+  base?: string;
+}
+
+export default function LandingPage({ base = "/" }: Props) {
+  const b = base.endsWith("/") ? base : base + "/";
   const [theme, setTheme] = useState<string>("dark");
   const [vis, setVis] = useState<Record<string, boolean>>({});
 
@@ -47,7 +52,7 @@ export default function LandingPage() {
         }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 56, flexWrap: "wrap", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <a href="/" style={{ textDecoration: "none" }}>
+              <a href={b} style={{ textDecoration: "none" }}>
                 <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, fontSize: 17, color: "var(--accent-1)", letterSpacing: "-0.03em" }}>
                   &gt;_ FOSS Explorer
                 </span>
@@ -61,11 +66,11 @@ export default function LandingPage() {
                   {s.charAt(0).toUpperCase() + s.slice(1)}
                 </a>
               ))}
-              <a href="/whyometer" style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", fontWeight: 500, transition: "color 0.2s" }}
+              <a href={`${b}whyometer`} style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", fontWeight: 500, transition: "color 0.2s" }}
                 onMouseEnter={e => (e.target as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={e => (e.target as HTMLElement).style.color = "var(--text-muted)"}>
                 Why-ometer
               </a>
-              <a href="/well-tampered-desktop" style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", fontWeight: 500, transition: "color 0.2s" }}
+              <a href={`${b}well-tampered-desktop`} style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none", fontWeight: 500, transition: "color 0.2s" }}
                 onMouseEnter={e => (e.target as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={e => (e.target as HTMLElement).style.color = "var(--text-muted)"}>
                 Desktop
               </a>
@@ -127,7 +132,7 @@ export default function LandingPage() {
                 Click any circle to zoom in and explore categories. Click the background or use breadcrumbs to zoom out. Find open source tools for your specific role and workflow.
               </p>
             </div>
-            <FOSSExplorer theme={theme} />
+            <FOSSExplorer theme={theme} base={b} />
           </section>
 
           <hr style={{ border: "none", borderTop: "1px solid var(--border)", margin: "48px 0" }} />

@@ -4,5 +4,5 @@ import LandingPage from '../components/LandingPage';
 ---
 
 <Layout title="FOSS Explorer - Open Source Strategy for Education">
-  <LandingPage client:only="react" />
+  <LandingPage client:only="react" base={import.meta.env.BASE_URL} />
 </Layout>

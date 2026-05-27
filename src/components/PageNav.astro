@@ -4,7 +4,8 @@ interface Props {
   backHref?: string;
 }
 
-const { backLabel = "Back to FOSS Explorer", backHref = "/" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const { backLabel = "Back to FOSS Explorer", backHref = base } = Astro.props;
 ---
 
 <nav class="page-nav">

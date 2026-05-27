@@ -4,9 +4,10 @@ import { FOSS_DATA, type FOSSNode } from "../data/foss-tree";
 
 interface Props {
   theme: string;
+  base?: string;
 }
 
-export default function FOSSExplorer({ theme }: Props) {
+export default function FOSSExplorer({ theme, base = "/" }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [dims, setDims] = useState({ w: 880, h: 640 });
@@ -108,7 +109,7 @@ export default function FOSSExplorer({ theme }: Props) {
       .on("dblclick", (e: any, d: any) => {
         e.stopPropagation();
         if (!d.children && d.data.slug) {
-          window.location.href = "/tool/" + d.data.slug;
+          window.location.href = (base.endsWith("/") ? base : base + "/") + "tool/" + d.data.slug;
         }
       })
       .on("mouseenter", (e: any, d: any) => {

@@ -1,34 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageNav from '../components/PageNav.astro';
 import WellTamperedDesktopView from '../components/WellTamperedDesktop';
 ---
 
 <Layout title="The Well-Tampered Desktop - FOSS Explorer" description="Generate deployment scripts and Ansible playbooks for your institutional Linux desktop">
-  <div class="page-wrapper">
-    <nav class="page-nav">
-      <a href="/" class="back-link">&lt; Back to FOSS Explorer</a>
-    </nav>
-    <WellTamperedDesktopView client:only="react" />
-  </div>
+  <PageNav />
+  <WellTamperedDesktopView client:only="react" />
 </Layout>
-
-<style>
-  .page-wrapper {
-    min-height: 100vh;
-    background: linear-gradient(170deg, #020617 0%, #060a13 100%);
-  }
-  .page-nav {
-    padding: 16px 32px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  }
-  .back-link {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: #64748b;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .back-link:hover {
-    color: #22d3ee;
-  }
-</style>
